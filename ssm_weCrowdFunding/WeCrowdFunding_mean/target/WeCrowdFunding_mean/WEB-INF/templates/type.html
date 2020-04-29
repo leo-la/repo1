@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="../http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        .tree li {
+            list-style-type: none;
+            cursor: pointer;
+        }
+
+        table tbody tr:nth-child(odd) {
+            background: #F4F4F4;
+        }
+
+        table tbody td:nth-child(even) {
+            color: #C00;
+        }
+
+        input[type=checkbox] {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="~{commons/maincommons::topbar}"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="~{commons/maincommons::sidebar(active='type',active2='business')}"></div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-th"></i> 数据矩阵</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table  table-bordered">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>商业公司</th>
+                                <th>个体工商户</th>
+                                <th>个人经营</th>
+                                <th>政府及非营利组织</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody">
+
+                            </tbody>
+
+                        </table>
+                        <a class="btn btn-default" onclick="javascript:updateCert()">更新</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../jquery/jquery-2.1.1.min.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+<script src="../script/docs.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $(".list-group-item").click(function () {
+            if ($(this).find("ul")) {
+                $(this).toggleClass("tree-closed");
+                if ($(this).hasClass("tree-closed")) {
+                    $("ul", this).hide("fast");
+                } else {
+                    $("ul", this).show("fast");
+                }
+            }
+        });
+
+        loadCert()
+    });
+    function getContextPath(){
+        var pathName = document.location.pathname;
+        var index = pathName.substr(1).indexOf("/");
+        var result = pathName.substr(0,index+1);
+        return result;
+    }
+
+    function loadCert() {
+        var contextPath = getContextPath()
+        var path = contextPath + "/business/searchCertTypePage"
+        $.ajax({
+            url: path,
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            type: "post",
+            success: function (data) {
+                var t1="";
+                for(var i=0;i<data.pageData.length;i++){
+                    var t2 = '        <tr>\n' +
+                        '                                <td>'+data.pageData[i].name+'</td>'
+                    t1 += t2;
+
+                    var flag = false;
+                    for(var j=0;j<data.pageData2.length;j++){
+                        if(data.pageData2[j].certid==data.pageData[i].id){
+                            if(data.pageData2[j].accttype=="商业公司"){
+                                var t3 =  '<td><input accttype="商业公司" certid="'+data.pageData[i].id+'" type="checkbox" checked ></td>'
+                                t1 += t3;
+                            }else{
+                                var t3 =  '<td><input accttype="商业公司" certid="'+data.pageData[i].id+'" type="checkbox" ></td>'
+                                t1 += t3;
+                            }
+
+                            if(data.pageData2[j].accttype=="个体工商户"){
+                                var t4 =  '<td><input accttype="个体工商户" certid="'+data.pageData[i].id+'" type="checkbox" checked ></td>'
+                                t1 += t4;
+                            }else{
+                                var t4 =  '<td><input accttype="个体工商户" certid="'+data.pageData[i].id+'" type="checkbox" ></td>'
+                                t1 += t4;
+                            }
+
+                            if(data.pageData2[j].accttype=="个人经营"){
+                                var t5 =  '<td><input accttype="个人经营" certid="'+data.pageData[i].id+'" type="checkbox" checked ></td>'
+                                t1 += t5;
+                            }else{
+                                var t5 =  '<td><input accttype="个人经营" certid="'+data.pageData[i].id+'" type="checkbox" ></td>'
+                                t1 += t5;
+                            }
+
+                            if(data.pageData2[j].accttype=="政府及非盈利组织"){
+                                var t6 =  '<td><input accttype="政府及非盈利组织" certid="'+data.pageData[i].id+'" type="checkbox" checked ></td>'
+                                t1 += t6;
+                            }else{
+                                var t6 =  '<td><input accttype="政府及非盈利组织" certid="'+data.pageData[i].id+'" type="checkbox" ></td>'
+                                t1 += t6;
+                            }
+                            flag = true;
+                            break;
+
+                        }
+                    }
+                    if(flag==false){
+                        var t7 =
+                            '                                <td><input accttype="商业公司" certid="'+data.pageData[i].id+'" type="checkbox" ></td>\n' +
+                            '                                <td><input accttype="个体工商户" certid="'+data.pageData[i].id+'" type="checkbox" ></td>\n' +
+                            '                                <td><input accttype="个人经营" certid="'+data.pageData[i].id+'" type="checkbox" ></td>\n' +
+                            '                                <td><input accttype="政府及非盈利组织" certid="'+data.pageData[i].id+'" type="checkbox" ></td>'
+                        t1 += t7;
+                    }
+                     var t8 =    '                            </tr>'
+                    t1 += t8;
+                }
+                $("#tbody").html(t1);
+            }
+        })
+    }
+    function updateCert() {
+        var c = $("[accttype]");
+        var j1 = '['
+        for(var i=0;i<c.length;i++){
+            if(c[i].checked){
+                var accttype = $(c[i]).attr("accttype")
+                var certid = $(c[i]).attr("certid")
+                var j2 = '{"accttype":"'+accttype+'","certid":"'+certid+'"},'
+                j1 += j2;
+            }
+
+        }
+        j1 = j1.substring(0,j1.length-1)+"]"
+        var contextPath = getContextPath()
+        var path = contextPath + "/business/updateCertType"
+        $.ajax({
+            url: path,
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            data: j1,
+            type: "post",
+            success: function (data) {
+                if(data==true){
+                    layer.msg('更新成功', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 1,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                    setTimeout(function () {
+                        window.location.reload()
+                    },1000)
+
+                }
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

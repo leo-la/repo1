@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="WeCrowdFunding_parent:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/WeCrowdFunding_parent_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="WeCrowdFunding_parent/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="WeCrowdFunding_parent" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

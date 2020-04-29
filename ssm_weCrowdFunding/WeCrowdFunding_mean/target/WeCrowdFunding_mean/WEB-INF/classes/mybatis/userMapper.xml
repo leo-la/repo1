@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leo.manager.dao.IUserDao">
+    <!-- 使用Redis二级缓存 -->
+    <cache type="com.leo.config.RedisCache"></cache>
+
+    <select id="findUserByName" resultType="UserInfo" parameterType="String">
+        select * from t_user where username=#{username}
+    </select>
+
+    <select id="findMembeById" resultType="member" parameterType="Integer">
+        select * from t_member where id=#{id}
+    </select>
+
+
+    <select id="findMemberByName" resultType="member" parameterType="String">
+        select * from t_member where username=#{username}
+    </select>
+
+    <select id="findUserByAuth" resultType="UserInfo" parameterType="userInfo">
+        select * from t_user where username=#{username} and userauth=#{userauth}
+    </select>
+
+    <select id="findUserByAcct" resultType="UserInfo" parameterType="userInfo">
+        select * from t_user where username=#{username} and loginacct=#{loginacct}
+    </select>
+
+    <select id="findUserCount" resultType="Integer">
+        select count(*) from t_user
+    </select>
+
+    <select id="searchUserPage" resultType="userInfo">
+        select * from t_user limit #{param1},#{param2}
+    </select>
+
+    <select id="updatePasswordByName" resultType="Integer" parameterType="userInfo">
+        update t_user set password=#{password} where username=#{username}
+    </select>
+
+    <select id="findUserByCondition" resultType="userInfo">
+       select * from t_user where CONCAT(IFNULL(id,''),IFNULL(username,''),IFNULL(email,''),IFNULL(name,''))
+       like #{param1} limit #{param2},#{param3}
+    </select>
+
+    <select id="findUserCountByCondition" resultType="Integer" parameterType="String">
+       select count(*) from t_user where CONCAT(IFNULL(id,''),IFNULL(username,''),IFNULL(email,''),IFNULL(name,''))
+       like #{condition}
+    </select>
+
+    <select id="findUserIdByName" resultType="Integer" parameterType="String">
+       select id from t_user where username=#{username}
+    </select>
+
+    <select id="findUserRoles" resultType="role" parameterType="Integer">
+      select * from t_role where id in (select roleid from t_user_role where userid=#{userid})
+    </select>
+
+    <insert id="addUser" parameterType="userInfo">
+        insert into t_user (loginacct,username,password,email,createtime,authorities,userauth) values
+        (#{loginacct},#{username},#{password},#{email},#{createtime},#{authorities},#{userauth})
+    </insert>
+
+    <insert id="addMember" parameterType="member">
+        insert into t_member (loginacct,username,password,email,authstatus,usertype,accttype) values
+        (#{loginacct},#{username},#{password},#{email},#{authstatus},#{usertype},#{accttype})
+    </insert>
+    
+    <delete id="deleteUserById" parameterType="Integer">
+        delete from t_user where id=#{id}
+    </delete>
+
+    <update id="updateUserAvatar">
+        update t_user set avatar=#{param1} where id=#{param2}
+    </update>
+
+    <update id="updateMemberByMid" parameterType="member">
+        update t_member set realname=#{realname},cardnum=#{cardnum},telephone=#{telephone} where id=#{id}
+    </update>
+
+    <update id="updateAccttype" >
+        update t_member set accttype=#{param1} where id=#{param2}
+    </update>
+
+    <update id="updateMemberAvatar">
+        update t_member set avatar=#{param1} where id=#{param2}
+    </update>
+
+    <update id="updateAuthstatus">
+        update t_member set authstatus=#{param1} where id=#{param2}
+    </update>
+
+</mapper>

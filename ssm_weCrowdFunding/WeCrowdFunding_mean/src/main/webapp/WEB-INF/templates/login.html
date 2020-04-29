@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keys" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/login.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <div><a class="navbar-brand" href="index.html" style="font-size:32px;">尚筹网-创意产品众筹平台</a></div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <form id="form" class="form-signin" action="../user/login" method="post" role="form">
+        <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2>
+        <div class="form-group has-success has-feedback">
+            <div th:if="${session.username!=null}">
+                <input type="text" class="form-control formVal username" name="username" th:value="${session.username}"
+                       placeholder="请输入登录账号" autofocus>
+            </div>
+            <div th:if="${session.username==null}">
+                <input type="text" class="form-control formVal username" name="username" placeholder="请输入登录账号"
+                       autofocus>
+            </div>
+            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+
+        </div>
+        <div class="form-group has-success has-feedback">
+            <div th:if="${session.password!=null}">
+                <input type="password" class="form-control formVal password" name="password"
+                       th:value="${session.password}" placeholder="请输入登录密码" style="margin-top:10px;">
+            </div>
+            <div th:if="${session.password==null}">
+                <input type="password" class="form-control formVal password" name="password" placeholder="请输入登录密码"
+                       style="margin-top:10px;">
+            </div>
+
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="remember-me"> 记住我
+            </label>
+            <br>
+            <label>
+                忘记密码
+            </label>
+            <label style="float:right">
+                <a href="../user/toRegister">我要注册</a>
+            </label>
+        </div>
+        <button class="btn btn-lg btn-success btn-block" onclick="javascript:checkForm()"> 登录</button>
+
+        <div id="errorMsg" class="alert alert-danger" th:if="${error_msg!=null}" th:text="${error_msg}">
+        </div>
+        <div id="errorMsg" class="alert alert-danger" style="display: none">
+        </div>
+    </form>
+
+</div>
+<script src="../jquery/jquery-2.1.1.min.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+<script>
+    function checkNull() {
+        var form1 = $(".username").val();
+        var form2 = $(".password").val();
+        var trim1 = $.trim(form1);
+        var trim2 = $.trim(form2);
+        var flag = false;
+        if (trim1 == "" || trim2 == "") {
+            $("#errorMsg").css("display", "block")
+            $("#errorMsg").text("账号或密码不能为空")
+        } else {
+            flag = true;
+        }
+        return flag;
+    }
+
+    function getContextPath() {
+        var pathName = document.location.pathname;
+        var index = pathName.substr(1).indexOf("/");
+        var result = pathName.substr(0, index + 1);
+        return result;
+    }
+
+    function checkForm() {
+        $("#form").submit(function () {
+            //检测空内容
+            //检测登录方式
+            var flag = false;
+            var notNull = checkNull();
+            if (notNull) {
+                if (notNull) {
+                    flag = true;
+                }
+            }
+            return flag;
+        })
+    }
+</script>
+</body>
+</html>

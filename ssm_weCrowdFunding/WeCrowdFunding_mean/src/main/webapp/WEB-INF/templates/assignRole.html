@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="../../../http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/font-awesome.min.css">
+	<link rel="stylesheet" href="../css/main.css">
+	<link rel="stylesheet" href="../css/doc.min.css">
+	<style>
+	.tree li {
+        list-style-type: none;
+		cursor:pointer;
+	}
+	</style>
+  </head>
+
+  <body>
+  <div th:replace="~{commons/maincommons::topbar}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+		  <div th:replace="~{commons/maincommons::sidebar(active='user',active2='permission')}"></div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<ol class="breadcrumb">
+				  <li><a href="../#">首页</a></li>
+				  <li><a href="../#">数据列表</a></li>
+				  <li class="active">分配角色</li>
+				</ol>
+			<div class="panel panel-default">
+			  <div class="panel-body">
+				<form role="form" class="form-inline text-center">
+					<input id="userid" type="hidden" >
+				  <div class="form-group ">
+					<label for="leftList">未分配角色列表</label><br>
+					<select id="leftList" class="form-control" multiple size="10" style="width:200px;overflow-y:auto;">
+
+                    </select>
+				  </div>
+				  <div class="form-group">
+                        <ul>
+                            <li id="toRight" class="btn btn-default glyphicon glyphicon-chevron-right" onclick="javascript:toRight()"></li>
+                            <br>
+                            <li class="btn btn-default glyphicon glyphicon-chevron-left" style="margin-top:20px;" onclick="javascript:toLeft()"></li>
+                        </ul>
+				  </div>
+				  <div class="form-group" style="margin-left:40px;">
+					<label for="rightList">已分配角色列表</label><br>
+					<select id="rightList" class="form-control" multiple size="10" style="width:200px;overflow-y:auto;">
+
+                    </select>
+				  </div>
+					<div style="padding-top: 20px">
+						<a class="btn btn-default" onclick="javascript:updateRole()">确认</a>
+						<a class="btn btn-default" onclick="history.go(-1)">返回</a>
+					</div>
+
+				</form>
+			  </div>
+			</div>
+        </div>
+      </div>
+    </div>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<h4 class="modal-title" id="myModalLabel">帮助</h4>
+		  </div>
+		  <div class="modal-body">
+			<div class="bs-callout bs-callout-info">
+				<h4>测试标题1</h4>
+				<p>测试内容1，测试内容1，测试内容1，测试内容1，测试内容1，测试内容1</p>
+			  </div>
+			<div class="bs-callout bs-callout-info">
+				<h4>测试标题2</h4>
+				<p>测试内容2，测试内容2，测试内容2，测试内容2，测试内容2，测试内容2</p>
+			  </div>
+		  </div>
+		  <!--
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Save changes</button>
+		  </div>
+		  -->
+		</div>
+	  </div>
+	</div>
+    <script src="../jquery/jquery-2.1.1.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+	<script src="../script/docs.min.js"></script>
+	<script src="../script/layer.js"></script>
+        <script type="text/javascript">
+            $(function () {
+			    $(".list-group-item").click(function(){
+				    if ( $(this).find("ul") ) {
+						$(this).toggleClass("tree-closed");
+						if ( $(this).hasClass("tree-closed") ) {
+							$("ul", this).hide("fast");
+						} else {
+							$("ul", this).show("fast");
+						}
+					}
+				});
+                loadRoleInformation()
+            });
+            function toRight() {
+				var leftList = $("#leftList option:selected");
+				$("#rightList").append(leftList);
+            }
+            function toLeft() {
+                var rightList = $("#rightList option:selected");
+                $("#leftList").append(rightList);
+            }
+            function getContextPath(){
+                var pathName = document.location.pathname;
+                var index = pathName.substr(1).indexOf("/");
+                var result = pathName.substr(0,index+1);
+                return result;
+            }
+
+            var oriRoles = new Array();
+            function loadRoleInformation(id) {
+                var contextPath = getContextPath()
+                var path = contextPath + "/permission/searchAssignRoleInformation"
+				var da = JSON.stringify({userid:id})
+				$.ajax({
+                    url: path,
+                    contentType: "application/json;charset=UTF-8",
+                    data: da,
+                    dataType: "json",
+                    type: "post",
+                    success: function (data) {
+						var optionleft = '';
+						for(var i=0;i<data.unAssignRoles.length;i++){
+						    var option1 = '<option value="'+data.unAssignRoles[i].id+'">'+data.unAssignRoles[i].name+'</option>'
+                            optionleft += option1;
+						}
+						$("#leftList").html(optionleft)
+
+                        var optionright = '';
+                        for(var i=0;i<data.assignedRoles.length;i++){
+                            var option1 = '<option value="'+data.assignedRoles[i].id+'">'+data.assignedRoles[i].name+'</option>'
+                            optionright += option1;
+                        }
+                        $("#rightList").html(optionright)
+						$("#userid").val(data.userid);
+                        for(var i=0;i<data.assignedRoles.length;i++){
+                            oriRoles.push(data.assignedRoles[i].id)
+                        }
+                    }
+				})
+            }
+            function updateRole() {
+                var contextPath = getContextPath()
+                var path = contextPath + "/permission/updateUserRole"
+				var userid = $("#userid").val();
+                var list = $("#rightList option");
+                var roles = new Array();
+				for(var i=0;i<list.length;i++){
+				    roles.push($(list[i]).val())
+				}
+                var da = JSON.stringify({userid:userid,updateRoles:roles})
+                if(roles.sort().toString()==oriRoles.sort().toString()){
+                    layer.msg('请修改角色信息~', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 2,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                }else{
+                    $.ajax({
+                        url: path,
+                        contentType: "application/json;charset=UTF-8",
+                        data: da,
+                        dataType: "json",
+                        type: "post",
+                        success: function (data) {
+                           if(data==true){
+                               layer.msg('修改成功', {
+                                   skin: 'layui-layer-molv', //样式类名
+                                   closeBtn: 0,
+                                   icon: 1,
+                                   time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                               })
+							   setTimeout(function () {
+								   window.location.reload();
+                               },1000)
+						   }else{
+                               layer.msg('修改失败', {
+                                   skin: 'layui-layer-molv', //样式类名
+                                   closeBtn: 0,
+                                   icon: 2,
+                                   time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                               })
+						   }
+                        }
+                    })
+				}
+            }
+        </script>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leo.manager.dao.IAuthDao">
+    <!-- 使用Redis二级缓存 -->
+    <cache type="com.leo.config.RedisCache"></cache>
+
+    <select id="findAuthCount" resultType="Integer" parameterType="Integer">
+        select accttype from t_authprocess where mid=#{mid}
+    </select>
+
+    <select id="findAuthByMid" resultType="authProcess" parameterType="Integer">
+        select * from t_authprocess where mid=#{mid}
+    </select>
+
+    <select id="findStatus" resultType="String" parameterType="Integer">
+        select status from t_authprocess where mid=#{mid}
+    </select>
+
+
+    <select id="findCode" resultType="String" parameterType="Integer">
+        select code from t_authprocess where mid=#{mid}
+    </select>
+
+    <select id="findMemberCertByMid" resultType="memberCert" parameterType="Integer">
+        select * from t_Member_Cert where memberid=#{mid}
+    </select>
+
+    <select id="findAllCerts" resultType="cert">
+        select * from t_Cert
+    </select>
+
+    <select id="findMemberNameByprocess" resultType="member" parameterType="String">
+     select * from t_member where id in (select mid from t_authprocess where proid=#{proid})
+    </select>
+
+    <update id="updateAuthCount">
+        update t_authprocess set accttype=#{param2},status=#{param3} where mid=#{param1}
+    </update>
+
+    <update id="updateStatus">
+        update t_authprocess set status=#{param2} where mid=#{param1}
+    </update>
+
+    <update id="updateProcess">
+        update t_authprocess set code=#{code},proid=#{proid} where mid=#{mid}
+    </update>
+
+    <update id="updateCode">
+        update t_authprocess set code=#{code} where mid=#{mid}
+    </update>
+
+    <insert id="addAuthprocess">
+        insert into t_authprocess (mid,accttype,status) values(#{param1},#{param2},#{param3})
+    </insert>
+
+    <insert id="addAuthCertImg">
+        insert into t_member_cert (memberid,certid,iconpath) values(#{param1},#{param2},#{param3})
+    </insert>
+
+    <delete id="deleteAuthCertImg" parameterType="Integer">
+        delete from t_member_cert where memberid=#{memberid}
+    </delete>
+
+</mapper>

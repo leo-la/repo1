@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/WeCrowdFunding_main" />
+    <file type="web" url="file://$PROJECT_DIR$/WeCrowdFunding_mean" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/WeCrowdFunding_parent/pom.xml" />
+        <option value="$PROJECT_DIR$/WeCrowdFunding_common/pom.xml" />
+        <option value="$PROJECT_DIR$/WeCrowdFunding_bean/pom.xml" />
+        <option value="$PROJECT_DIR$/WeCrowdFunding_manager_api/pom.xml" />
+        <option value="$PROJECT_DIR$/WeCrowdFunding_manager_impl/pom.xml" />
+        <option value="$PROJECT_DIR$/WeCrowdFunding_potal_api/pom.xml" />
+        <option value="$PROJECT_DIR$/WeCrowdFunding_potal_impl/pom.xml" />
+        <option value="$PROJECT_DIR$/WeCrowdFunding_mean/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/WeCrowdFunding/pom.xml" />
+        <option value="$PROJECT_DIR$/WeCrowdFunding_main/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_9" default="false" project-jdk-name="13" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="WeCrowdFunding_bean" />
+        <module name="WeCrowdFunding_common" />
+        <module name="WeCrowdFunding_manager_api" />
+        <module name="WeCrowdFunding_manager_impl" />
+        <module name="WeCrowdFunding_mean" />
+        <module name="WeCrowdFunding_potal_api" />
+        <module name="WeCrowdFunding_potal_impl" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="WeCrowdFunding_bean" target="1.7" />
+      <module name="WeCrowdFunding_common" target="1.7" />
+      <module name="WeCrowdFunding_manager_api" target="1.7" />
+      <module name="WeCrowdFunding_manager_impl" target="1.7" />
+      <module name="WeCrowdFunding_mean" target="1.7" />
+      <module name="WeCrowdFunding_parent" target="1.7" />
+      <module name="WeCrowdFunding_potal_api" target="1.7" />
+      <module name="WeCrowdFunding_potal_impl" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

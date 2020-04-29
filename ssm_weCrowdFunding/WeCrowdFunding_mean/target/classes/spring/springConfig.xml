@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--spring核心配置-->
+
+    <!--开启spring注解扫描-扫描service,dao-->
+    <context:component-scan base-package="com.leo">
+        <!--controller不扫描-->
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!--Spring整合MyBatis框架-->
+
+    <!--配置连接池-->
+    <context:property-placeholder location="classpath:*.properties"/>
+
+    <import resource="springRedis.xml"/>
+     <!--引入数据库配置文件-->
+    <!--<bean id="propertyConfigurer"-->
+          <!--class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+        <!--<property name="locations">-->
+            <!--<list>-->
+                <!--<value>classpath:jdbcConfig.properties</value>-->
+                <!--<value>classpath:redis.properties</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!-- redis数据源 -->
+    <!--<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">-->
+        <!--<property name="maxIdle" value="${redis.maxIdle}" />-->
+        <!--<property name="maxTotal" value="${redis.maxActive}" />-->
+        <!--<property name="maxWaitMillis" value="${redis.maxWait}" />-->
+        <!--<property name="testOnBorrow" value="${redis.testOnBorrow}" />-->
+    <!--</bean>-->
+    <!--&lt;!&ndash; Spring-redis连接池管理工厂 &ndash;&gt;-->
+    <!--<bean id="jedisConnectionFactory"-->
+          <!--class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"-->
+          <!--p:host-name="${redis.host}" p:port="${redis.port}" p:password="${redis.pass}"-->
+          <!--p:pool-config-ref="poolConfig" />-->
+    <!--&lt;!&ndash; 使用中间类解决RedisCache.jedisConnectionFactory的静态注入，从而使MyBatis实现第三方缓存 &ndash;&gt;-->
+    <!--<bean id="redisCacheTransfer" class="com.leo.config.RedisCacheTransfer">-->
+        <!--<property name="jedisConnectionFactory" ref="jedisConnectionFactory" />-->
+    <!--</bean>-->
+
+    <!--配置数据源-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${driverClass}"/>
+        <property name="jdbcUrl" value="${jdbcUrl}"/>
+        <property name="user" value="${user}"/>
+        <property name="password" value="${password}"/>
+    </bean>
+
+    <!--配置SqlSessionFactory工厂-->
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property value="classpath:mybatis/mybatisConfig.xml" name="configLocation"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations">
+            <list>
+                <value>classpath:mybatis/*Mapper.xml</value>
+            </list>
+        </property>
+        <!--开启redis缓存 -->
+        <!--<property name="configurationProperties">-->
+            <!--<props>-->
+                <!--&lt;!&ndash;全局映射器启用缓存&ndash;&gt;-->
+                <!--<prop key ="cacheEnabled">true</prop>-->
+                <!--&lt;!&ndash;查询时，关闭关连对象即时加载以提高性能&ndash;&gt;-->
+                <!--<prop key="lazyLoadingEnabled">false</prop>-->
+                <!--&lt;!&ndash; 设置关联对象加载的形态，此处为按需要加载字段（加载字段由sql决定），不会加载关联表的所有字段，以提高性能&ndash;&gt;-->
+                <!--<prop key="aggressiveLazyLoading">true</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+    </bean>
+
+    <!--mapper扫描器-->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.leo.manager.dao"/>
+    </bean>
+
+    <!-- 事务管理器 -->
+
+    <!--配置事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--开启事务注解支持-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+
+
+        <tx:attributes>
+
+            <tx:method name="*" rollback-for="java.lang.Exception" isolation="DEFAULT" propagation="REQUIRED"/>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="get*" read-only="true"/>
+
+        </tx:attributes>
+
+    </tx:advice>
+
+
+    <!--<aop:config>-->
+
+        <!--<aop:advisor pointcut="execution(* com.leo.manager..*Service.*(..))" advice-ref="transactionAdvice"/>-->
+
+    <!--</aop:config>-->
+
+
+    <!-- 使用工厂创建流程引擎对象 -->
+    <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+        <property name="processEngineConfiguration" ref="processEngineConfiguration" />
+    </bean>
+
+    <!-- 注册Service -->
+    <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService">
+    </bean>
+    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService">
+    </bean>
+    <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService">
+    </bean>
+    <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService">
+    </bean>
+    <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"></bean>
+
+</beans>

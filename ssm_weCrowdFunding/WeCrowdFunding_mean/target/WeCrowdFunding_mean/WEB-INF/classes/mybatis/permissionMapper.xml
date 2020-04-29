@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leo.manager.dao.IPermissionDao">
+    <!-- 使用Redis二级缓存 -->
+    <cache type="com.leo.config.RedisCache"></cache>
+
+    <select id="findAllRoles" resultType="role" >
+        select * from t_role
+    </select>
+
+    <select id="findUserRoles" resultType="role" parameterType="Integer" >
+        select * from t_role where id in (select roleid from t_user_role where userid=#{userid})
+    </select>
+
+    <select id="findRoleById" resultType="role" parameterType="Integer" >
+        select * from t_role where id=#{id}
+    </select>
+
+    <select id="findRoleCount" resultType="Integer">
+        select count(*) from t_role
+    </select>
+
+    <select id="findMembersCount" resultType="Integer">
+        select count(*) from t_member
+    </select>
+
+    <select id="searchRolePage" resultType="role">
+        select * from t_role limit #{param1},#{param2}
+    </select>
+
+    <select id="searchMemberPage" resultType="member">
+        select * from t_member limit #{param1},#{param2}
+    </select>
+
+    <select id="findRoleCountByCondition" resultType="Integer">
+       select count(*) from t_role where CONCAT(IFNULL(id,''),IFNULL(name,'')) like #{condition}
+    </select>
+
+    <select id="findRoleByCondition" resultType="role">
+       select * from t_role where CONCAT(IFNULL(id,''),IFNULL(name,'')) like #{param1} limit #{param2},#{param3}
+    </select>
+
+    <select id="findMemberCountByCondition" resultType="Integer">
+       select count(*) from t_member where CONCAT(IFNULL(id,''),IFNULL(username,'')) like #{condition}
+    </select>
+
+    <select id="findMemberByCondition" resultType="member">
+       select * from t_member where CONCAT(IFNULL(id,''),IFNULL(username,'')) like #{param1} limit #{param2},#{param3}
+    </select>
+
+    <select id="findAllPermissions" resultType="permission" >
+        select * from t_permission
+    </select>
+
+    <select id="findPermissionByRoleid" resultType="Integer" parameterType="Integer" >
+        select permissionid from t_role_permission where roleid=#{roleid}
+    </select>
+
+    <select id="findPermissionById" resultType="permission" parameterType="Integer" >
+        select * from t_permission where id=#{id}
+    </select>
+
+    <select id="findPermissionByName" resultType="permission" parameterType="String" >
+        select * from t_permission where name=#{name}
+    </select>
+
+    <select id="findAllIcon" resultType="icon">
+        select * from t_icon
+    </select>
+
+    <insert id="addRole" parameterType="role">
+        insert into t_role (name) values (#{name})
+    </insert>
+
+    <insert id="addUserRoles" parameterType="role">
+        insert into t_user_role (userid,username,password,email,createtime,authorities,userauth) values
+        (#{loginacct},#{username},#{password},#{email},#{createtime},#{authorities},#{userauth})
+    </insert>
+
+    <insert id="addPermission" parameterType="permission">
+        insert into t_permission (pid,name,icon,url) values
+        (#{pid},#{name},#{icon},#{url})
+    </insert>
+
+    <insert id="addUserRolesByUserid">
+        INSERT INTO t_user_role(userid,roleid)
+        VALUES
+        <foreach collection="param2" item="role" separator=",">
+            (#{param1},#{role})
+        </foreach>
+    </insert>
+
+    <insert id="addPermissionsByRoleid">
+        INSERT INTO t_role_permission(roleid,permissionid)
+        VALUES
+        <foreach collection="param2" item="permission" separator=",">
+            (#{param1},#{permission})
+        </foreach>
+    </insert>
+    
+    <delete id="deleteUserRolesByUserid" parameterType="Integer">
+        delete from t_user_role where userid=#{userid}
+    </delete>
+
+    <delete id="deletePermissionByRoleid" parameterType="Integer">
+        delete from t_role_permission where roleid=#{roleid}
+    </delete>
+
+    <delete id="deleteRoleById" parameterType="Integer">
+        delete from t_role where id=#{id}
+    </delete>
+
+    <delete id="deletePermission" parameterType="String">
+        delete from t_permission where name=#{name}
+    </delete>
+
+    <update id="updatePermission" parameterType="permission">
+        update t_permission set pid=#{pid},name=#{name},icon=#{icon},url=#{url} where id=#{id}
+    </update>
+
+    <update id="updateRole" parameterType="role">
+        update t_role set name=#{name} where id=#{id}
+    </update>
+
+
+</mapper>

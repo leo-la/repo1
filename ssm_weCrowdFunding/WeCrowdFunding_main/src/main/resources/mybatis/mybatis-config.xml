@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--&lt;!&ndash;配置数据源properties&ndash;&gt;-->
+    <!--<properties resource="jdbc.properties"></properties>-->
+    <!--&lt;!&ndash;配置参数&ndash;&gt;-->
+    <settings>
+        <setting name="lazyLoadingEnabled" value="false"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="logImpl" value="LOG4J" />
+        <setting name="cacheEnabled" value="false"/>
+    </settings>
+    <typeAliases>
+        <!--配置别名。type用于指实体类全限定名。alias指别名-->
+        <!--<typeAlias type="com.leo.domain.Adm" alias="adm"></typeAlias>-->
+        <!--配置别名。type用于指要配置别名的包。该包下的实体类都会被注册别名，别名就是类名，不再区分大小写alias指别名-->
+        <package name="com.leo.pojo" ></package>
+    </typeAliases>
+
+    <!--&lt;!&ndash;配置环境&ndash;&gt;-->
+    <!--<environments default="mysql">-->
+        <!--&lt;!&ndash;配置mysql环境&ndash;&gt;-->
+        <!--<environment id="mysql">-->
+            <!--&lt;!&ndash;配置事务的类型&ndash;&gt;-->
+            <!--<transactionManager type="JDBC"/>-->
+            <!--&lt;!&ndash;配置数据源-连接池&ndash;&gt;-->
+            <!--<dataSource type="POOLED">-->
+                <!--&lt;!&ndash;配置数据源&ndash;&gt;-->
+                <!--<property name="driver" value="${driver}"/>-->
+                <!--<property name="url" value="${url}"/>-->
+                <!--<property name="username" value="${username}"/>-->
+                <!--<property name="password" value="${password}"/>-->
+            <!--</dataSource>-->
+        <!--</environment>-->
+    <!--</environments>-->
+    <!--&lt;!&ndash;指定映射配置文件的位置，映射配置文件指的是每个dao独立的配置文件&ndash;&gt;-->
+    <!--<mappers>-->
+        <!--&lt;!&ndash;<mapper resource="com/leo/dao/IAdmDao.xml"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;package标签用于指定dao接口所在的包，指定了之后不再需要写mapper,resource,class。。&ndash;&gt;-->
+        <!--&lt;!&ndash;<package name="com.leo.dao"></package>&ndash;&gt;-->
+    <!--</mappers>-->
+</configuration>

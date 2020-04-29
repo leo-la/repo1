@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leo.manager.dao.ITestDao">
+
+ <!---->
+    <!--<select id="queryRolePermissionByUser" resultType="permission">-->
+        <!--select * from t_permission-->
+        <!--where id in (-->
+	        <!--select-->
+	            <!--rp.permissionid-->
+	        <!--from t_role_permission rp-->
+	        <!--join t_user_role ur on ur.roleid = rp.roleid and ur.userid = #{id}-->
+        <!--) and id != pid-->
+        <!--order by seqno-->
+    <!--</select>-->
+
+    <!---->
+    <insert id="insert">
+        insert into test (name) values (#{name})
+    </insert>
+
+    <select id="findName" resultType="TestUser" parameterType="Integer">
+        select * from test where id=#{id}
+    </select>
+    <!---->
+    <!--<update id="updateUser">-->
+        <!--update t_user-->
+        <!--set name = #{name}, sex = #{sex}, email = #{email}, loginacct = #{loginacct}-->
+        <!--where id = #{id}-->
+    <!--</update>-->
+    <!--<delete id="deleteUserRole">-->
+        <!--delete from t_user_role where userid = #{userid} and roleid = #{roleid}-->
+    <!--</delete>-->
+</mapper>
