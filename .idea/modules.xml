@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/WeCrowdFunding_bean/WeCrowdFunding_bean.iml" filepath="$PROJECT_DIR$/WeCrowdFunding_bean/WeCrowdFunding_bean.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WeCrowdFunding_common/WeCrowdFunding_common.iml" filepath="$PROJECT_DIR$/WeCrowdFunding_common/WeCrowdFunding_common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WeCrowdFunding_manager_api/WeCrowdFunding_manager_api.iml" filepath="$PROJECT_DIR$/WeCrowdFunding_manager_api/WeCrowdFunding_manager_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WeCrowdFunding_manager_impl/WeCrowdFunding_manager_impl.iml" filepath="$PROJECT_DIR$/WeCrowdFunding_manager_impl/WeCrowdFunding_manager_impl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WeCrowdFunding_mean/WeCrowdFunding_mean.iml" filepath="$PROJECT_DIR$/WeCrowdFunding_mean/WeCrowdFunding_mean.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WeCrowdFunding_parent/WeCrowdFunding_parent.iml" filepath="$PROJECT_DIR$/WeCrowdFunding_parent/WeCrowdFunding_parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WeCrowdFunding_potal_api/WeCrowdFunding_potal_api.iml" filepath="$PROJECT_DIR$/WeCrowdFunding_potal_api/WeCrowdFunding_potal_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WeCrowdFunding_potal_impl/WeCrowdFunding_potal_impl.iml" filepath="$PROJECT_DIR$/WeCrowdFunding_potal_impl/WeCrowdFunding_potal_impl.iml" />
+    </modules>
+  </component>
+</project>
