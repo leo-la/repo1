@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keys" content="">
+    <meta name="author" content="">
+	<link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+	<link rel="stylesheet" th:href="@{/css/login.css}">
+	<style>
+
+	</style>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <div><a class="navbar-brand" href="index.html" style="font-size:32px;">尚筹网-创意产品众筹平台</a></div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <form id="form" class="form-signin" role="form">
+        <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户注册</h2>
+		  <div class="form-group has-success has-feedback">
+			<input type="text" class="form-control" id="inputSuccess1" name="username" placeholder="请输入登录账号" autofocus>
+			<span class="glyphicon glyphicon-user form-control-feedback"></span>
+		  </div>
+		  <div class="form-group has-success has-feedback">
+			<input type="text" class="form-control" id="inputSuccess2" name="password" placeholder="请输入登录密码" style="margin-top:10px;">
+			<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+		  </div>
+		  <div class="form-group has-success has-feedback">
+			<input type="text" class="form-control" id="inputSuccess3" name="email" placeholder="请输入邮箱地址" style="margin-top:10px;">
+			<span class="glyphicon glyphicon glyphicon-envelope form-control-feedback"></span>
+		  </div>
+		  <div class="form-group has-success has-feedback">
+			<select class="form-control" name="loginacct" id="inputSuccess4">
+                <option value="0">企业</option>
+                <option value="2">个人</option>
+            </select>
+		  </div>
+        <div class="checkbox">
+          <label>
+            忘记密码
+          </label>
+          <label style="float:right">
+            <a href="user/toLogin">我有账号</a>
+          </label>
+        </div>
+        <a class="btn btn-lg btn-success btn-block" onclick="javascript:register()" > 注册</a>
+          <div id="errorMsg" class="alert alert-danger" style="display: none" >
+          </div>
+      </form>
+    </div>
+    <script th:src="@{/jquery/jquery-2.1.1.min.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{/script/layer.js}"></script>
+  <script>
+      function getContextPath(){
+          var pathName = document.location.pathname;
+          var index = pathName.substr(1).indexOf("/");
+          var result = pathName.substr(0,index+1);
+          return result;
+      }
+      function checkreg() {
+          var flag = false;
+          var notNull = checkNull();
+          if(notNull){
+              var notUsed = checkName();
+              if(notNull&&notUsed){
+                  flag = true;
+              }else if(notNull&&!notUsed){
+                  $("#errorMsg").css("display","block")
+                  $("#errorMsg").text("该用户名已被使用")
+              }
+          }
+          return flag;
+      }
+      function register() {
+          var isRegister = checkreg();
+          if(isRegister){
+              var name = $("#inputSuccess1").val();
+              var password = $("#inputSuccess2").val();
+              var email = $("#inputSuccess3").val();
+              var acct = $("#inputSuccess4").val();
+              var da = JSON.stringify({
+                  username:name,
+                  password:password,
+                  email:email,
+                  accttype:acct
+              })
+              var contextPath = getContextPath()
+              var path = contextPath + "/user/register"
+              $.ajax({
+                  url:path,
+                  contentType:"application/json;charset=utf-8",
+                  dataType:"json",
+                  data:da,
+                  type:"post",
+                  success:function (data) {
+                      if(data==true){
+                          //墨绿深蓝风
+                          layer.msg('成功注册，请重新登陆', {
+                              skin: 'layui-layer-molv', //样式类名
+                              closeBtn: 0,
+                              icon: 1,
+                              time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                          })
+                          setTimeout(function(){ window.location.href = contextPath+"/user/toLogin"}, 2000);
+
+                      }
+                  }
+              })
+              return false;
+          }
+      }
+      function checkNull() {
+          var trim1 = $.trim($("#inputSuccess1").val());
+          var trim2 = $.trim($("#inputSuccess2").val());
+          var trim3 = $.trim($("#inputSuccess3").val());
+          var trim4 = $.trim($("#inputSuccess4").val());
+          var flag = false;
+          if(trim1==""||trim2==""||trim3==""||trim4==""){
+              $("#errorMsg").css("display","block")
+              $("#errorMsg").text("信息不能为空")
+          }else{
+              flag = true;
+          }
+          return flag;
+      }
+      function checkName() {
+          var name = $("#inputSuccess1").val();
+          var acct = $("#inputSuccess4").val();
+          var da = JSON.stringify({username:name,loginacct:acct})
+          var contextPath = getContextPath()
+          var path = contextPath + "/user/checkacct"
+          var flag = false;
+          $.ajax({
+              url:path,
+              contentType:"application/json;charset=utf-8",
+              dataType:"json",
+              data:da,
+              type:"post",
+              async: false,
+              success:function (data) {
+                  if(data==true){
+                      flag = true;
+                  }
+              }
+          })
+          return flag;
+      }
+  </script>
+  </body>
+</html>

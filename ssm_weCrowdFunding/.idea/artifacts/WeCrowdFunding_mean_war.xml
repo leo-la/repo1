@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="WeCrowdFunding_mean:war">
+    <output-path>$PROJECT_DIR$/WeCrowdFunding_mean/target</output-path>
+    <root id="archive" name="WeCrowdFunding_mean.war">
+      <element id="artifact" artifact-name="WeCrowdFunding_mean:war exploded" />
+    </root>
+  </artifact>
+</component>

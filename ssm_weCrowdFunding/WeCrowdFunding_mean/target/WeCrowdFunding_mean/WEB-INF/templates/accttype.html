@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <style>
+        #footer {
+            padding: 15px 0;
+            background: #fff;
+            border-top: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .seltype {
+            position: absolute;
+            margin-top: 70px;
+            margin-left: 10px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{commons/maincommons::topbar}"></div>
+
+<div class="container theme-showcase" role="main">
+    <div class="page-header">
+        <h1>实名认证 - 账户类型选择</h1>
+    </div>
+    <div style="padding-top:10px;">
+        <div class="row">
+            <div class="col-xs-6 col-md-3">
+
+                <h2 class="tit">商业公司</h2>
+                <a class="thumbnail">
+
+                    <img alt="100%x180" th:src="@{/img/services-box1.jpg}" data-holder-rendered="true"
+                         style="height: 180px; width: 100%; display: block;">
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <h2 class="tit">个体工商户</h2>
+                <a class="thumbnail">
+                    <img alt="100%x180" th:src="@{/img/services-box2.jpg}" data-holder-rendered="true"
+                         style="height: 180px; width: 100%; display: block;">
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <h2 class="tit">个人经营</h2>
+                <a class="thumbnail">
+                    <img alt="100%x180" th:src="@{/img/services-box3.jpg}" data-holder-rendered="true"
+                         style="height: 180px; width: 100%; display: block;">
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <h2 class="tit">政府及非营利组织</h2>
+                <a class="thumbnail">
+                    <img alt="100%x180" th:src="@{/img/services-box4.jpg}" data-holder-rendered="true"
+                         style="height: 180px; width: 100%; display: block;">
+                </a>
+            </div>
+        </div>
+        <button type="button" class="btn btn-danger btn-lg btn-block" onclick="javascript:authApply()">认证申请
+        </button>
+    </div> <!-- /container -->
+    <!-- /END THE FEATURETTES -->
+
+
+    <div class="container" style="margin-top:20px;">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div id="footer">
+                    <div class="footerNav"></div>
+                    <div class="copyRight">
+                        Copyright ?2017-2017atguigu.com 版权所有
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/jquery/jquery-2.1.1.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/script/docs.min.js}"></script>
+<script th:src="@{/script/layer.js}"></script>
+<script>
+    $(".thumbnail").click(function () {
+        $('.seltype').remove();
+        $(this).prepend('<div class="glyphicon glyphicon-ok seltype"></div>');
+    });
+    function getContextPath(){
+        var pathName = document.location.pathname;
+        var index = pathName.substr(1).indexOf("/");
+        var result = pathName.substr(0,index+1);
+        return result;
+    }
+    function authApply() {
+        var title = $(".glyphicon-ok").parent().parent().children(".tit").text();
+        if(title==""){
+            layer.msg('请选择认证类型', {
+                    skin: 'layui-layer-molv', //样式类名
+                    closeBtn: 0,
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }
+            );
+        }else{
+            var contextPath = getContextPath()
+            var path = contextPath + "/auth/authAccttype/{"+title+"}";
+            window.location.href = path;
+        }
+    }
+</script>
+</body>
+</html>

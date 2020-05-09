@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--mybatis的主配置文件-->
+<configuration>
+    <!--&lt;!&ndash;配置数据源properties&ndash;&gt;-->
+    <!--<properties resource="jdbcConfig.properties"></properties>-->
+    <!--&lt;!&ndash;配置参数&ndash;&gt;-->
+    <settings>
+        <!--&lt;!&ndash; 全局映射器启用缓存 *主要将此属性设置完成即可 &ndash;&gt;-->
+        <setting name="cacheEnabled" value="true" />
+
+        <!--&lt;!&ndash; 查询时，关闭关联对象即时加载以提高性能 &ndash;&gt;-->
+        <!--<setting name="lazyLoadingEnabled" value="false" />-->
+
+        <!--&lt;!&ndash; 对于未知的SQL查询，允许返回不同的结果集以达到通用的效果 &ndash;&gt;-->
+        <!--<setting name="multipleResultSetsEnabled" value="true" />-->
+
+        <!--&lt;!&ndash; 设置关联对象加载的形态，此处为按需加载字段(加载字段由SQL指 定)，不会加载关联表的所有字段，以提高性能 &ndash;&gt;-->
+        <!--<setting name="aggressiveLazyLoading" value="true" />-->
+    </settings>
+    <typeAliases>
+        <!--配置别名。type用于指实体类全限定名。alias指别名-->
+        <!--<typeAlias type="com.leo.domain.Adm" alias="adm"></typeAlias>-->
+        <!--配置别名。type用于指要配置别名的包。该包下的实体类都会被注册别名，别名就是类名，不再区分大小写alias指别名-->
+        <package name="com.leo.pojo" ></package>
+    </typeAliases>
+
+    <!--&lt;!&ndash;配置环境&ndash;&gt;-->
+    <!--<environments default="mysql">-->
+        <!--&lt;!&ndash;配置mysql环境&ndash;&gt;-->
+        <!--<environment id="mysql">-->
+            <!--&lt;!&ndash;配置事务的类型&ndash;&gt;-->
+            <!--<transactionManager type="JDBC"/>-->
+            <!--&lt;!&ndash;配置数据源-连接池&ndash;&gt;-->
+            <!--<dataSource type="POOLED">-->
+                <!--&lt;!&ndash;配置数据源&ndash;&gt;-->
+                <!--<property name="driver" value="${driver}"/>-->
+                <!--<property name="url" value="${url}"/>-->
+                <!--<property name="username" value="${username}"/>-->
+                <!--<property name="password" value="${password}"/>-->
+            <!--</dataSource>-->
+        <!--</environment>-->
+    <!--</environments>-->
+    <!--指定映射配置文件的位置，映射配置文件指的是每个dao独立的配置文件-->
+    <!--<mappers>-->
+        <!--&lt;!&ndash;<mapper resource="com/leo/dao/IAdmDao.xml"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;package标签用于指定dao接口所在的包，指定了之后不再需要写mapper,resource,class。。&ndash;&gt;-->
+        <!--<package name="com.leo.manager.dao"></package>-->
+    <!--</mappers>-->
+</configuration>

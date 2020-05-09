@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="../http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .tree li {
+            list-style-type: none;
+            cursor: pointer;
+        }
+
+        table tbody tr:nth-child(odd) {
+            background: #F4F4F4;
+        }
+
+        table tbody td:nth-child(even) {
+            color: #C00;
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:replace="~{commons/maincommons::topbar}"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="~{commons/maincommons::sidebar(active='process',active2='business')}"></div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-th"></i> 数据列表</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-inline" role="form" style="float:left;">
+                        <div class="form-group has-feedback">
+                            <div class="input-group">
+                                <div class="input-group-addon">查询条件</div>
+                                <input class="form-control has-success" type="text" placeholder="请输入查询条件">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询
+                        </button>
+                    </form>
+
+                    <a type="button" class="btn btn-primary" style="float:right;"
+                            onclick="javascript:addProcess()"><i class="glyphicon glyphicon-upload"></i>
+                        上传流程定义文件
+                    </a>
+                    <form id="form" method="post" enctype ="multipart/form-data">
+                        <input onchange="javascript:submitData()" type="file" id="avatar_file" name="file" style=" opacity: 0"/>
+                    </form>
+
+                    <br>
+                    <hr style="clear:both;">
+                    <div class="table-responsive">
+                        <table class="table  table-bordered">
+                            <thead>
+                            <tr>
+                                <th width="30">#</th>
+                                <th>流程名称</th>
+                                <th>流程版本</th>
+                                <th>任务名称</th>
+                                <th width="100">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody">
+
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="6" align="center">
+                                    <div class="col-md-12">
+                                        <div class="col-md-2" style="padding-top: 18px">
+                                         <span id="pageLeft" style="font-size: 18px;">
+                                         </span>
+                                        </div>
+
+                                        <div class="col-md-10">
+                                            <nav aria-label="..." style="float: right">
+                                                <ul id="pageRight" class="pagination">
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/jquery/jquery-2.1.1.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/script/docs.min.js}"></script>
+<script th:src="@{/script/layer.js}"></script>
+<script type="text/javascript">
+    function getContextPath(){
+        var pathName = document.location.pathname;
+        var index = pathName.substr(1).indexOf("/");
+        var result = pathName.substr(0,index+1);
+        return result;
+    }
+    var contextPath = getContextPath();
+
+    $(function () {
+        $(".list-group-item").click(function () {
+            if ($(this).find("ul")) {
+                $(this).toggleClass("tree-closed");
+                if ($(this).hasClass("tree-closed")) {
+                    $("ul", this).hide("fast");
+                } else {
+                    $("ul", this).show("fast");
+                }
+            }
+        });
+        loadPageData()
+    });
+
+    function loadPageData(currentPage) {
+        var pageSize = 15;
+        var da = JSON.stringify({pageSize: pageSize, currentPage: currentPage});
+        var path = contextPath + "/business/searchProcessPage"
+        $.ajax({
+            url: path,
+            contentType: "application/json;charset=UTF-8",
+            data: da,
+            dataType: "json",
+            type: "post",
+            success: function (data) {
+                var t1 = '';
+                for(var i=0;i<data.pageData.length;i++){
+                    var t2 = '         <tr>\n' +
+                        '                                <td>'+(i+1)+'</td>\n' +
+                        '                                <td>'+data.pageData[i].name+'</td>\n' +
+                        '                                <td>'+data.pageData[i].version+'</td>\n' +
+                        '                                <td>'+data.pageData[i].key+'</td>\n' +
+                        '                                <td>\n' +
+                        '                                    <button type="button" class="btn btn-success btn-xs"><i\n' +
+                        '                                            class=" glyphicon glyphicon-eye-open" onclick="javascript:showProcess(\''+data.pageData[i].id+'\')"></i></button>\n' +
+                        '                                    <button type="button" class="btn btn-danger btn-xs"><i\n' +
+                        '                                            class=" glyphicon glyphicon-remove" onclick="javascript:deleteConfirm(\''+data.pageData[i].id+'\')"></i></button>\n' +
+                        '                                </td>\n' +
+                        '                            </tr>'
+                    t1+=t2;
+                }
+                $("#tbody").html(t1);
+
+                //显示左侧页面信息
+                var page1 = '共<span style="color: #017ebc;"> '+data.totalPage+' </span> 页 <span style="color: #017ebc;"> '+data.totalCount+' </span>条'
+                $("#pageLeft").html(page1)
+
+                //显示右侧分页信息
+                var pager = ' <li><a href="javascript:loadPageData('+(data.currentPage-1)+')">Previous</a></li>';
+                if(data.currentPage-1<=0){
+                    pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
+                }
+
+                for(var i=0;i<data.totalPage;i++){
+                    if(data.currentPage==(i+1)){
+                        var pagerli =   '<li class="active"><a href="javascript:loadPageData('+(i+1)+')">'+(i+1)+'</a></li>';
+                    }else{
+                        var pagerli =   '<li><a href="javascript:loadPageData('+(i+1)+')">'+(i+1)+'</a></li>';
+
+                    }
+                    pager += pagerli;
+                }
+                var pager2 = '<li><a href="javascript:loadPageData('+(data.currentPage+1)+')">Next</a></li>';
+                if(data.currentPage+1>data.totalPage){
+                    pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
+                }
+                pager += pager2;
+
+                $("#pageRight").html(pager);
+            }
+        })
+    }
+    function deleteConfirm(id) {
+        layer.confirm('确定删除该流程吗？', {
+                skin: 'layui-layer-molv', //样式类名
+                btn: ['确定','取消']
+            },function (index) {
+                layer.close(index);
+            deleteProcess(id)
+            },function () {
+            }
+        );
+    }
+    function showProcess(id) {
+        alert(id)
+    }
+    function deleteProcess(id) {
+        var da = JSON.stringify({id: id});
+        var path = contextPath + "/business/deleteProcess/{"+id+"}"
+        $.ajax({
+            url: path,
+            contentType: "application/json;charset=UTF-8",
+            data: da,
+            dataType: "json",
+            type: "post",
+            success: function (data) {
+                if(data==true){
+                    layer.msg('删除流程成功', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 1,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                    setTimeout(function () {
+                        window.location.reload()
+                    },1000)
+                }
+            },error:function () {
+                layer.msg('服务器错误', {
+                    skin: 'layui-layer-molv', //样式类名
+                    closeBtn: 0,
+                    icon:2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                })
+            }
+        })
+    }
+    function addProcess() {
+        $("#avatar_file").click()
+    }
+    function submitData() {
+        var path = contextPath +"/business/addProcess"
+        var file = $("#avatar_file")[0].files[0];
+        var formData = new FormData();
+        formData.append("file",file);
+        $.ajax({
+            url: path,
+            type: "POST",
+            data: formData,
+            /**
+             *必须false才会自动加上正确的Content-Type
+             */
+            contentType: false,
+            /**
+             * 必须false才会避开jQuery对 formdata 的默认处理
+             * XMLHttpRequest会对 formdata 进行正确的处理
+             */
+            processData: false,
+            cache: false,
+            success: function (data) {
+                if(data==true){
+                    layer.msg('上传成功', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 1,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    setTimeout(function () {
+                        window.location.reload()
+                    },1000)
+                }else{
+                    layer.msg('上传失败，请稍后重试', {
+                            skin: 'layui-layer-molv', //样式类名
+                            closeBtn: 0,
+                            icon: 2,
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }
+                    );
+                }
+            },error:function () {
+                layer.msg('服务器错误', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 2,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }
+                );
+            }
+        })
+    }
+    function showProcess(id) {
+        var path = contextPath + "/business/toShowProcess/{"+id+"}"
+        window.location.href = path;
+    }
+</script>
+</body>
+</html>

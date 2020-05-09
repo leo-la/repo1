@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1585885013511" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <process id="auth" isClosed="false" isExecutable="true" name="认证审核" processType="None">
+    <startEvent id="auth1" name="StartEvent">
+      <extensionElements>
+        <activiti:executionListener class="com.leo.listener.activiti.SendEmailListener" event="start"/>
+        <activiti:executionListener class="com.leo.listener.activiti.SendEmailListener" event="start"/>
+      </extensionElements>
+    </startEvent>
+    <userTask activiti:exclusive="true" id="auth2" name="审核验证码"/>
+    <userTask activiti:candidateGroups="backuser" activiti:exclusive="true" id="auth3" name="后台审核验证"/>
+    <exclusiveGateway gatewayDirection="Unspecified" id="auth4" name="审核判断"/>
+    <endEvent id="auth5" name="通过">
+      <extensionElements>
+        <activiti:executionListener class="com.leo.listener.activiti.YesListener" event="end"/>
+      </extensionElements>
+    </endEvent>
+    <endEvent id="auth6" name="拒绝">
+      <extensionElements>
+        <activiti:executionListener class="com.leo.listener.activiti.NoListener" event="start"/>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="_11" sourceRef="auth2" targetRef="auth3"/>
+    <sequenceFlow id="_12" sourceRef="auth3" targetRef="auth4"/>
+    <sequenceFlow id="_13" name="通过" sourceRef="auth4" targetRef="auth5">
+      <extensionElements>
+        <activiti:executionListener class="com.leo.listener.activiti.YesListener" event="end"/>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${flag==true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_14" name="拒绝" sourceRef="auth4" targetRef="auth6">
+      <extensionElements>
+        <activiti:executionListener class="com.leo.listener.activiti.NoListener" event="end"/>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${flag==false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_15" sourceRef="auth1" targetRef="auth2"/>
+  </process>
+  <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="auth">
+      <bpmndi:BPMNShape bpmnElement="auth1" id="Shape-auth1">
+        <omgdc:Bounds height="32.0" width="32.0" x="70.0" y="160.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="auth2" id="Shape-auth2">
+        <omgdc:Bounds height="55.0" width="85.0" x="205.0" y="150.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="auth3" id="Shape-auth3">
+        <omgdc:Bounds height="55.0" width="85.0" x="345.0" y="150.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="auth4" id="Shape-auth4" isMarkerVisible="false">
+        <omgdc:Bounds height="32.0" width="32.0" x="620.0" y="170.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="auth5" id="Shape-auth5">
+        <omgdc:Bounds height="32.0" width="32.0" x="710.0" y="55.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="auth6" id="Shape-auth6">
+        <omgdc:Bounds height="32.0" width="32.0" x="725.0" y="305.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_13" id="BPMNEdge__13" sourceElement="auth4" targetElement="auth5">
+        <omgdi:waypoint x="652.0" y="186.0"/>
+        <omgdi:waypoint x="710.0" y="71.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12" id="BPMNEdge__12" sourceElement="auth3" targetElement="auth4">
+        <omgdi:waypoint x="430.0" y="177.5"/>
+        <omgdi:waypoint x="620.0" y="186.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_15" id="BPMNEdge__15" sourceElement="auth1" targetElement="auth2">
+        <omgdi:waypoint x="102.0" y="176.0"/>
+        <omgdi:waypoint x="205.0" y="177.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_14" id="BPMNEdge__14" sourceElement="auth4" targetElement="auth6">
+        <omgdi:waypoint x="652.0" y="186.0"/>
+        <omgdi:waypoint x="725.0" y="321.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_11" id="BPMNEdge__11" sourceElement="auth2" targetElement="auth3">
+        <omgdi:waypoint x="290.0" y="177.5"/>
+        <omgdi:waypoint x="345.0" y="177.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

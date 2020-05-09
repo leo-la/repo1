@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leo.manager.dao.IBusinessDao">
+    <!-- 使用Redis二级缓存 -->
+    <cache type="com.leo.config.RedisCache"></cache>
+
+    <select id="findAllCerts" resultType="cert">
+        select * from t_cert
+    </select>
+
+    <select id="findAllTypeCert" resultType="TypeCert">
+        select * from t_account_type_cert
+    </select>
+
+    <select id="findCertids" resultType="Integer" parameterType="String">
+        select certid from t_account_type_cert where accttype=#{accttype}
+    </select>
+
+    <delete id="deleteAllTypeCert" >
+        delete from t_account_type_cert
+    </delete>
+
+    <insert id="addTypeCert" parameterType="typeCert">
+        insert into t_account_type_cert (accttype,certid) values(#{accttype},#{certid})
+    </insert>
+
+</mapper>

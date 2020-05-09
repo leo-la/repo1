@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="tttetet:war">
+    <output-path>$PROJECT_DIR$/../../tttetet/target</output-path>
+    <root id="archive" name="testestset.war">
+      <element id="artifact" artifact-name="tttetet:war exploded" />
+    </root>
+  </artifact>
+</component>
